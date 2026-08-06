@@ -118,7 +118,7 @@
       // On GitHub Pages: fetch local posts.json (same as repo)
       // On other hosts (CloudStudio): try GitHub raw first, fall back to local
       var isGithub = window.location.hostname.indexOf('github.io') !== -1;
-      var remoteUrl = 'https://raw.githubusercontent.com/i7koe/kiki-thinking/main/posts.json?t=' + Date.now();
+      var remoteUrl = 'https://raw.githubusercontent.com/i7koe/kiki-thinking/gh-pages/posts.json?t=' + Date.now();
       var fetchUrl = isGithub ? 'posts.json' : remoteUrl;
 
       function tryFetch(url) {
