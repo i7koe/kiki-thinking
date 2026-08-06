@@ -122,6 +122,20 @@
       transition: background 0.2s;
     }
     .btn-new:hover { background: #0066cc; }
+    .btn-about {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #007AFF;
+      background: #FFFFFF;
+      border: 1px solid #007AFF;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.2s;
+    }
+    .btn-about:hover { background: #f0f7ff; }
 
     /* Post list */
     .admin-post-list {
@@ -320,6 +334,7 @@
       <button class="btn-logout" onclick="doLogout()">退出</button>
     </div>
     <button class="btn-new" onclick="showEditor()">+ 新建文章</button>
+    <button class="btn-about" onclick="showAboutEditor()">编辑关于</button>
     <ul class="admin-post-list" id="admin-post-list">
       <li class="loading-center">加载中...</li>
     </ul>
@@ -346,10 +361,13 @@
     var REPO = 'i7koe/kiki-thinking';
     var BRANCH = 'gh-pages';
     var FILE = 'posts.json';
+    var ABOUT_FILE = 'about.json';
 
     // === State ===
     var postsData = null;  // { posts: [], sha: '' }
+    var aboutData = null; // { content: '', sha: '' }
     var editingId = null;
+    var editingAbout = false;
 
     // === Token management ===
     function getToken() { return localStorage.getItem('gh_token') || ''; }
@@ -506,11 +524,52 @@
 
     function showEditor() {
       editingId = null;
+      editingAbout = false;
       document.getElementById('edit-title').value = '';
       document.getElementById('edit-content').value = '';
+      document.getElementById('edit-title').style.display = '';
       document.getElementById('btn-publish').textContent = '发布';
       showView('editor-view');
       document.getElementById('edit-title').focus();
+    }
+
+    function showAboutEditor() {
+      editingId = null;
+      editingAbout = true;
+      document.getElementById('edit-title').value = '关于';
+      document.getElementById('edit-title').style.display = 'none';
+      document.getElementById('btn-publish').textContent = '保存';
+      var contentEl = document.getElementById('edit-content');
+      contentEl.value = '加载中...';
+      contentEl.disabled = true;
+      showView('editor-view');
+
+      // Load about.json
+      ghGetFile(ABOUT_FILE)
+        .then(function(result) {
+          var data;
+          try {
+            data = JSON.parse(result.content);
+          } catch (e) {
+            data = { content: '' };
+          }
+          aboutData = { content: data.content || '', sha: result.sha };
+          contentEl.value = aboutData.content;
+          contentEl.disabled = false;
+          contentEl.focus();
+        })
+        .catch(function(err) {
+          if (err.message.indexOf('404') !== -1) {
+            // about.json doesn't exist yet
+            aboutData = { content: '', sha: null };
+            contentEl.value = '';
+            contentEl.disabled = false;
+            contentEl.focus();
+          } else {
+            showToast('加载失败: ' + err.message, 'error');
+            showList();
+          }
+        });
     }
 
     function showEditorForEdit(id) {
@@ -523,7 +582,9 @@
       }
       if (!post) return;
       editingId = id;
+      editingAbout = false;
       document.getElementById('edit-title').value = post.title;
+      document.getElementById('edit-title').style.display = '';
       document.getElementById('edit-content').value = post.content || '';
       document.getElementById('btn-publish').textContent = '保存';
       showView('editor-view');
@@ -623,15 +684,46 @@
     }
 
     function publishPost() {
-      var title = document.getElementById('edit-title').value.trim();
       var content = document.getElementById('edit-content').value;
+
+      // === About page editing ===
+      if (editingAbout) {
+        if (!content.trim()) {
+          showToast('请输入内容', 'error');
+          return;
+        }
+        var btn = document.getElementById('btn-publish');
+        btn.disabled = true;
+        btn.textContent = '保存中...';
+        var aboutContent = JSON.stringify({ content: content }, null, 2);
+        ghPutFile(ABOUT_FILE, aboutContent, aboutData ? aboutData.sha : null, 'update about page')
+          .then(function(result) {
+            if (result.content && result.content.sha) {
+              aboutData = { content: content, sha: result.content.sha };
+            }
+            showToast('关于页面已更新', 'success');
+            editingAbout = false;
+            showList();
+          })
+          .catch(function(err) {
+            showToast('保存失败: ' + (err.message || '未知错误'), 'error');
+          })
+          .finally(function() {
+            btn.disabled = false;
+            btn.textContent = '保存';
+          });
+        return;
+      }
+
+      // === Article editing ===
+      var title = document.getElementById('edit-title').value.trim();
       if (!title) {
         showToast('请输入标题', 'error');
         document.getElementById('edit-title').focus();
         return;
       }
 
-      var btn = document.getElementById('btn-publish');
+      btn = document.getElementById('btn-publish');
       btn.disabled = true;
       btn.textContent = '发布中...';
 
