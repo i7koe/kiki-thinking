@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="robots" content="noindex, nofollow">
+  <title>管理后台 - kk^小記</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Admin-specific styles */
+    .admin-body { background: #f5f5f5; }
+
+    .admin-container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 20px 16px 60px;
+    }
+
+    /* Login */
+    .login-card {
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 40px 24px;
+      margin-top: 60px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .login-card h1 {
+      font-size: 22px;
+      font-weight: 500;
+      margin: 0 0 8px;
+      color: #333;
+    }
+    .login-card p.login-sub {
+      font-size: 14px;
+      color: #828282;
+      margin: 0 0 28px;
+    }
+    .login-card input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .login-card input:focus {
+      outline: none;
+      border-color: #007AFF;
+    }
+    .login-card .btn-login {
+      width: 100%;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #FFFFFF;
+      background: #007AFF;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .login-card .btn-login:hover { background: #0066cc; }
+    .login-card .login-help {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #f0f0f0;
+      font-size: 13px;
+      color: #828282;
+      line-height: 1.6;
+    }
+    .login-card .login-help a { color: #007AFF; }
+
+    /* Admin top bar */
+    .admin-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      margin-bottom: 20px;
+    }
+    .admin-topbar .topbar-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+    }
+    .admin-topbar .topbar-title a {
+      color: #828282;
+      font-size: 13px;
+      font-weight: 400;
+      margin-left: 8px;
+    }
+    .admin-topbar .btn-logout {
+      font-size: 13px;
+      color: #828282;
+      background: none;
+      border: 1px solid #e8e8e8;
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .admin-topbar .btn-logout:hover {
+      color: #333;
+      border-color: #ccc;
+    }
+
+    /* New post button */
+    .btn-new {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #FFFFFF;
+      background: #007AFF;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: background 0.2s;
+    }
+    .btn-new:hover { background: #0066cc; }
+
+    /* Post list */
+    .admin-post-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .admin-post-item {
+      background: #FFFFFF;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .admin-post-item .post-info { flex: 1; min-width: 0; }
+    .admin-post-item .post-info h3 {
+      margin: 0 0 4px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .admin-post-item .post-info .post-date {
+      font-size: 12px;
+      color: #828282;
+    }
+    .admin-post-item .post-actions {
+      display: flex;
+      gap: 6px;
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+    .admin-post-item .post-actions button {
+      font-size: 13px;
+      border: 1px solid #e8e8e8;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      background: #FFFFFF;
+      color: #828282;
+      transition: all 0.2s;
+    }
+    .admin-post-item .post-actions button:hover {
+      color: #007AFF;
+      border-color: #007AFF;
+    }
+    .admin-post-item .post-actions .btn-delete:hover {
+      color: #e74c3c;
+      border-color: #e74c3c;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 0;
+      color: #828282;
+    }
+    .empty-state p { font-size: 14px; margin: 0 0 16px; }
+
+    /* Editor */
+    .editor-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      margin-bottom: 16px;
+    }
+    .editor-topbar .btn-back {
+      font-size: 14px;
+      color: #828282;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 0;
+    }
+    .editor-topbar .btn-back:hover { color: #007AFF; }
+    .editor-topbar .btn-publish {
+      font-size: 14px;
+      font-weight: 500;
+      color: #FFFFFF;
+      background: #007AFF;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .editor-topbar .btn-publish:hover { background: #0066cc; }
+    .editor-topbar .btn-publish:disabled {
+      background: #b0d4ff;
+      cursor: not-allowed;
+    }
+
+    .editor-title-input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 20px;
+      font-weight: 500;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      font-family: inherit;
+      color: #333;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .editor-title-input:focus {
+      outline: none;
+      border-color: #007AFF;
+    }
+
+    .editor-content-input {
+      width: 100%;
+      min-height: 300px;
+      padding: 14px;
+      font-size: 15px;
+      line-height: 1.7;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      font-family: inherit;
+      color: #333;
+      resize: vertical;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .editor-content-input:focus {
+      outline: none;
+      border-color: #007AFF;
+    }
+
+    .editor-hint {
+      font-size: 12px;
+      color: #828282;
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    /* Toast / message */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+    .toast.error { background: #e74c3c; }
+    .toast.success { background: #27ae60; }
+
+    /* Loading */
+    .loading-center {
+      text-align: center;
+      padding: 60px 0;
+      color: #828282;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- Login View -->
+  <div id="login-view" class="admin-container">
+    <div class="login-card">
+      <h1>管理后台</h1>
+      <p class="login-sub">输入 GitHub Token 登录</p>
+      <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+      <button class="btn-login" onclick="doLogin()">登录</button>
+      <div class="login-help">
+        <p><strong>如何获取 Token：</strong></p>
+        <p>1. 打开 <a href="https://github.com/settings/tokens" target="_blank">GitHub Token 设置页</a></p>
+        <p>2. 点 "Generate new token (classic)"</p>
+        <p>3. 勾选 <code>repo</code> 权限，生成后复制</p>
+        <p>4. 粘贴到上方输入框，点登录</p>
+        <p style="margin-top: 12px; color: #999;">Token 仅保存在本浏览器，不会上传到任何服务器。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- List View -->
+  <div id="list-view" class="admin-container" style="display:none">
+    <div class="admin-topbar">
+      <span class="topbar-title">文章管理 <a href="index.html" target="_blank">查看博客</a></span>
+      <button class="btn-logout" onclick="doLogout()">退出</button>
+    </div>
+    <button class="btn-new" onclick="showEditor()">+ 新建文章</button>
+    <ul class="admin-post-list" id="admin-post-list">
+      <li class="loading-center">加载中...</li>
+    </ul>
+  </div>
+
+  <!-- Editor View -->
+  <div id="editor-view" class="admin-container" style="display:none">
+    <div class="editor-topbar">
+      <button class="btn-back" onclick="showList()">← 返回</button>
+      <button class="btn-publish" id="btn-publish" onclick="publishPost()">发布</button>
+    </div>
+    <input type="text" class="editor-title-input" id="edit-title" placeholder="标题">
+    <textarea class="editor-content-input" id="edit-content" placeholder="正文内容（支持 Markdown 格式）"></textarea>
+    <p class="editor-hint">
+      支持 Markdown：<strong>**粗体**</strong>、<em>*斜体*</em>、<code>`代码`</code>、<code>&gt; 引用</code>、<code># 标题</code>、<code>- 列表</code>
+    </p>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // === Config ===
+    var REPO = 'i7koe/kiki-thinking';
+    var BRANCH = 'main';
+    var FILE = 'posts.json';
+
+    // === State ===
+    var postsData = null;  // { posts: [], sha: '' }
+    var editingId = null;
+
+    // === Token management ===
+    function getToken() { return localStorage.getItem('gh_token') || ''; }
+    function setToken(t) { localStorage.setItem('gh_token', t); }
+    function clearToken() { localStorage.removeItem('gh_token'); }
+
+    // === Base64 helpers (UTF-8 safe) ===
+    function b64encode(str) {
+      var bytes = new TextEncoder().encode(str);
+      var binary = '';
+      for (var i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    }
+    function b64decode(b64) {
+      var bytes = Uint8Array.from(atob(b64), function(c) { return c.charCodeAt(0); });
+      return new TextDecoder().decode(bytes);
+    }
+
+    // === GitHub API ===
+    function ghHeaders() {
+      return {
+        'Authorization': 'Bearer ' + getToken(),
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      };
+    }
+
+    function ghGetFile(path) {
+      var url = 'https://api.github.com/repos/' + REPO + '/contents/' + path + '?ref=' + BRANCH;
+      return fetch(url, { headers: ghHeaders() })
+        .then(function(resp) {
+          if (!resp.ok) throw new Error('API ' + resp.status);
+          return resp.json();
+        })
+        .then(function(data) {
+          return {
+            sha: data.sha,
+            content: data.content ? b64decode(data.content.replace(/\n/g, '')) : ''
+          };
+        });
+    }
+
+    function ghPutFile(path, content, sha, message) {
+      var url = 'https://api.github.com/repos/' + REPO + '/contents/' + path;
+      var body = {
+        message: message || ('update: ' + path),
+        content: b64encode(content),
+        branch: BRANCH
+      };
+      if (sha) body.sha = sha;
+      return fetch(url, {
+        method: 'PUT',
+        headers: Object.assign({}, ghHeaders(), { 'Content-Type': 'application/json' }),
+        body: JSON.stringify(body)
+      })
+        .then(function(resp) {
+          if (!resp.ok) {
+            return resp.json().then(function(data) {
+              throw new Error(data.message || ('API ' + resp.status));
+            });
+          }
+          return resp.json();
+        });
+    }
+
+    // === Posts data management ===
+    function loadPostsData() {
+      return ghGetFile(FILE)
+        .then(function(result) {
+          var data;
+          try {
+            data = JSON.parse(result.content);
+          } catch (e) {
+            data = { posts: [] };
+          }
+          if (!data.posts) data.posts = [];
+          postsData = { posts: data.posts, sha: result.sha };
+          return postsData;
+        });
+    }
+
+    function savePostsData() {
+      var content = JSON.stringify({ posts: postsData.posts }, null, 2);
+      return ghPutFile(FILE, content, postsData.sha, 'update posts.json')
+        .then(function(result) {
+          // Update SHA for next save
+          if (result.content && result.content.sha) {
+            postsData.sha = result.content.sha;
+          }
+          return result;
+        });
+    }
+
+    // === UI helpers ===
+    function showToast(msg, type) {
+      var toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast show' + (type ? ' ' + type : '');
+      setTimeout(function() {
+        toast.className = 'toast';
+      }, 3000);
+    }
+
+    function formatDate(d) {
+      var parts = d.split('-');
+      return parts[0] + '年' + parseInt(parts[1]) + '月' + parseInt(parts[2]) + '日';
+    }
+
+    function escapeHtml(str) {
+      var div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    function generateId(title) {
+      var slug = title.trim().toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      if (slug && slug.length >= 2 && slug.length <= 50) return slug;
+      return 'post-' + Date.now();
+    }
+
+    function generateExcerpt(content) {
+      var text = content
+        .replace(/^#+\s+/gm, '')
+        .replace(/[*`>\[\]()!#-]/g, '')
+        .replace(/\n+/g, ' ')
+        .trim();
+      if (text.length > 100) text = text.substring(0, 100) + '...';
+      return text;
+    }
+
+    function getToday() {
+      var d = new Date();
+      return d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+    }
+
+    // === View management ===
+    function showView(id) {
+      ['login-view', 'list-view', 'editor-view'].forEach(function(v) {
+        document.getElementById(v).style.display = 'none';
+      });
+      document.getElementById(id).style.display = '';
+    }
+
+    function showList() {
+      showView('list-view');
+      renderPostList();
+    }
+
+    function showEditor() {
+      editingId = null;
+      document.getElementById('edit-title').value = '';
+      document.getElementById('edit-content').value = '';
+      document.getElementById('btn-publish').textContent = '发布';
+      showView('editor-view');
+      document.getElementById('edit-title').focus();
+    }
+
+    function showEditorForEdit(id) {
+      var post = null;
+      for (var i = 0; i < postsData.posts.length; i++) {
+        if (postsData.posts[i].id === id) {
+          post = postsData.posts[i];
+          break;
+        }
+      }
+      if (!post) return;
+      editingId = id;
+      document.getElementById('edit-title').value = post.title;
+      document.getElementById('edit-content').value = post.content || '';
+      document.getElementById('btn-publish').textContent = '保存';
+      showView('editor-view');
+      document.getElementById('edit-title').focus();
+    }
+
+    // === Render ===
+    function renderPostList() {
+      var list = document.getElementById('admin-post-list');
+      if (!postsData || postsData.posts.length === 0) {
+        list.innerHTML =
+          '<div class="empty-state">' +
+          '<p>还没有文章</p>' +
+          '<button class="btn-new" style="width:auto;padding:10px 28px" onclick="showEditor()">写第一篇</button>' +
+          '</div>';
+        return;
+      }
+      // Sort by date descending
+      var posts = postsData.posts.slice().sort(function(a, b) {
+        return b.date.localeCompare(a.date);
+      });
+      var html = '';
+      for (var i = 0; i < posts.length; i++) {
+        var p = posts[i];
+        html += '<li class="admin-post-item">' +
+          '<div class="post-info">' +
+          '<h3>' + escapeHtml(p.title) + '</h3>' +
+          '<span class="post-date">' + formatDate(p.date) + '</span>' +
+          '</div>' +
+          '<div class="post-actions">' +
+          '<button onclick="showEditorForEdit(\'' + p.id.replace(/'/g, "\\'") + '\')">编辑</button>' +
+          '<button class="btn-delete" onclick="deletePost(\'' + p.id.replace(/'/g, "\\'") + '\')">删除</button>' +
+          '</div>' +
+          '</li>';
+      }
+      list.innerHTML = html;
+    }
+
+    // === Actions ===
+    function doLogin() {
+      var token = document.getElementById('token-input').value.trim();
+      if (!token) {
+        showToast('请输入 Token', 'error');
+        return;
+      }
+      // Test token by fetching repo info
+      fetch('https://api.github.com/repos/' + REPO, {
+        headers: ghHeaders()
+      })
+        .then(function(resp) {
+          if (resp.status === 401) {
+            throw new Error('Token 无效');
+          }
+          if (!resp.ok) throw new Error('API ' + resp.status);
+          return resp.json();
+        })
+        .then(function() {
+          setToken(token);
+          showToast('登录成功', 'success');
+          initAdmin();
+        })
+        .catch(function(err) {
+          showToast(err.message || '登录失败', 'error');
+        });
+    }
+
+    function doLogout() {
+      clearToken();
+      postsData = null;
+      document.getElementById('token-input').value = '';
+      showView('login-view');
+      showToast('已退出登录');
+    }
+
+    function initAdmin() {
+      showView('list-view');
+      document.getElementById('admin-post-list').innerHTML =
+        '<li class="loading-center">加载中...</li>';
+      loadPostsData()
+        .then(function() {
+          renderPostList();
+        })
+        .catch(function(err) {
+          // If posts.json doesn't exist yet, create it with empty array
+          if (err.message.indexOf('404') !== -1) {
+            postsData = { posts: [], sha: null };
+            return savePostsData().then(function() {
+              showToast('已初始化文章数据', 'success');
+              renderPostList();
+            });
+          }
+          document.getElementById('admin-post-list').innerHTML =
+            '<li class="loading-center">加载失败: ' + escapeHtml(err.message) + '</li>';
+        });
+    }
+
+    function publishPost() {
+      var title = document.getElementById('edit-title').value.trim();
+      var content = document.getElementById('edit-content').value;
+      if (!title) {
+        showToast('请输入标题', 'error');
+        document.getElementById('edit-title').focus();
+        return;
+      }
+
+      var btn = document.getElementById('btn-publish');
+      btn.disabled = true;
+      btn.textContent = '发布中...';
+
+      // Ensure posts data is loaded
+      var promise = postsData ? Promise.resolve() : loadPostsData();
+      promise
+        .then(function() {
+          var excerpt = generateExcerpt(content);
+          var today = getToday();
+
+          if (editingId) {
+            // Update existing
+            for (var i = 0; i < postsData.posts.length; i++) {
+              if (postsData.posts[i].id === editingId) {
+                postsData.posts[i].title = title;
+                postsData.posts[i].content = content;
+                postsData.posts[i].excerpt = excerpt;
+                break;
+              }
+            }
+          } else {
+            // New post
+            var id = generateId(title);
+            // Ensure unique ID
+            var existingIds = postsData.posts.map(function(p) { return p.id; });
+            if (existingIds.indexOf(id) !== -1) {
+              id = 'post-' + Date.now();
+            }
+            postsData.posts.unshift({
+              id: id,
+              title: title,
+              date: today,
+              excerpt: excerpt,
+              content: content
+            });
+          }
+
+          return savePostsData();
+        })
+        .then(function() {
+          showToast('发布成功！', 'success');
+          editingId = null;
+          showList();
+        })
+        .catch(function(err) {
+          showToast('发布失败: ' + (err.message || '未知错误'), 'error');
+        })
+        .finally(function() {
+          btn.disabled = false;
+          btn.textContent = editingId ? '保存' : '发布';
+        });
+    }
+
+    function deletePost(id) {
+      if (!confirm('确定删除这篇文章？此操作不可撤销。')) return;
+
+      postsData.posts = postsData.posts.filter(function(p) { return p.id !== id; });
+
+      savePostsData()
+        .then(function() {
+          showToast('已删除', 'success');
+          renderPostList();
+        })
+        .catch(function(err) {
+          showToast('删除失败: ' + (err.message || '未知错误'), 'error');
+        });
+    }
+
+    // === Init ===
+    (function() {
+      // Allow Enter to submit login
+      document.getElementById('token-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') doLogin();
+      });
+
+      // Auto-save draft
+      setInterval(function() {
+        if (document.getElementById('editor-view').style.display !== 'none') {
+          var title = document.getElementById('edit-title').value;
+          var content = document.getElementById('edit-content').value;
+          if (title || content) {
+            localStorage.setItem('draft', JSON.stringify({ title: title, content: content }));
+          }
+        }
+      }, 5000);
+
+      // Restore draft if editing new post
+      // (Only when entering editor without editingId — handled in showEditor)
+
+      // Check if already logged in
+      if (getToken()) {
+        initAdmin();
+      } else {
+        showView('login-view');
+      }
+    })();
+  </script>
+
+</body>
+</html>
