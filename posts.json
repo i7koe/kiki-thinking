@@ -1,13 +1,6 @@
 {
   "posts": [
     {
-      "id": "test-debug-1786031170",
-      "title": "Test Debug Post",
-      "date": "2026-08-06",
-      "excerpt": "Testing publish",
-      "content": "This is a test."
-    },
-    {
       "id": "hello-world",
       "title": "hello( ´ ▽ ` )",
       "date": "2025-08-06",
