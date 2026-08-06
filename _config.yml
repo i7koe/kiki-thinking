@@ -11,14 +11,11 @@ baseurl: "/kiki-thinking"
 
 # 构建设置
 theme: minima
-plugins:
-  - jekyll-feed
-  - jekyll-seo-tag
 
 # Minima 主题设置
 minima:
   skin: classic
-  date_format: "%Y年%m月%d日"
+  date_format: "%Y-%m-%d"
 
 # 首页是否显示文章摘要
 show_excerpts: false
@@ -29,8 +26,6 @@ header_pages:
 
 # ============================================
 # Giscus 评论配置
-# 部署后去 https://giscus.app 填入你的仓库信息
-# 会自动生成 repo_id 和 category_id，粘贴到这里
 # ============================================
 giscus:
   repo: "i7koe/kiki-thinking"
