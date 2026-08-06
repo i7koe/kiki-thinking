@@ -12,6 +12,7 @@
     <div class="wrapper">
       <a class="site-title" href="index.html">kk^小記</a>
       <nav class="site-nav">
+        <a href="index.html">文章</a>
         <a href="about.html">关于</a>
       </nav>
     </div>
@@ -19,14 +20,38 @@
 
   <main class="page-content">
     <div class="wrapper">
-      <article class="post">
-        <header class="post-header">
-          <h1 class="post-title">关于</h1>
-        </header>
-        <div class="post-content about-content">
-          <p>（这里还是空的，等你来填）</p>
+      <div class="layout">
+
+        <div class="main-col">
+          <article class="post">
+            <header class="post-header">
+              <h1 class="post-title">关于</h1>
+            </header>
+            <div class="post-content about-content">
+              <p>（这里还是空的，等你来填）</p>
+            </div>
+          </article>
         </div>
-      </article>
+
+        <aside class="sidebar-col">
+          <div class="sidebar-section music-section">
+            <h3 class="sidebar-title">此刻在听</h3>
+            <div class="music-player">
+              <iframe
+                frameborder="no"
+                border="0"
+                marginwidth="0"
+                marginheight="0"
+                width="280"
+                height="86"
+                src="//music.163.com/outchain/player?type=2&id=2001036566&auto=1&height=66"
+                allow="autoplay; encrypted-media">
+              </iframe>
+            </div>
+          </div>
+        </aside>
+
+      </div>
     </div>
   </main>
 
@@ -35,6 +60,25 @@
       <p>&copy; 2025 [咳咳咳] &middot; 由 [kk] 驱动</p>
     </div>
   </footer>
+
+  <div class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </div>
+
+  <script>
+    (function() {
+      var btn = document.querySelector('.back-to-top');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      }, { passive: true });
+    })();
+  </script>
 
 </body>
 </html>
