@@ -36,7 +36,7 @@ giscus:
   repo: "i7koe/kiki-thinking"
   repo_id: "R_kgDOTv1pXQ"
   category: "Announcements"
-  category_id: "YOUR_CATEGORY_ID"
+  category_id: "DIC_kwDOTv1pXc4DCzi1"
   mapping: "pathname"
   reactions_enabled: 1
   emit_metadata: 0
