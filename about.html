@@ -12,7 +12,7 @@
     <div class="wrapper">
       <a class="site-title" href="index.html">kk^小記</a>
       <nav class="site-nav">
-        <a href="index.html">文章</a>
+        <a href="index.html">目录</a>
         <a href="about.html">关于</a>
       </nav>
     </div>
@@ -23,17 +23,25 @@
       <div class="layout">
 
         <div class="main-col">
-          <article class="post">
+          <article class="post" id="about-article">
             <header class="post-header">
               <h1 class="post-title">关于</h1>
             </header>
-            <div class="post-content about-content">
-              <p>（这里还是空的，等你来填）</p>
+            <div class="post-content about-content" id="about-content">
+              <p style="color: #828282;">加载中...</p>
             </div>
           </article>
         </div>
 
         <aside class="sidebar-col">
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">关于</h3>
+            <div class="sidebar-about">
+              <span class="site-name">kk^小記</span>
+              <span class="site-desc">世事漫隨流水</span>
+            </div>
+          </div>
+
           <div class="sidebar-section music-section">
             <h3 class="sidebar-title">此刻在听</h3>
             <div class="music-player">
@@ -67,8 +75,26 @@
     </svg>
   </div>
 
+  <!-- Markdown renderer (with fallback) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    if (typeof marked === 'undefined') {
+      window.marked = {
+        parse: function(text) {
+          return text
+            .split('\n\n')
+            .map(function(p) {
+              return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+            })
+            .join('\n');
+        }
+      };
+    }
+  </script>
+
   <script>
     (function() {
+      // Back to top
       var btn = document.querySelector('.back-to-top');
       window.addEventListener('scroll', function() {
         if (window.scrollY > 300) {
@@ -77,6 +103,39 @@
           btn.classList.remove('visible');
         }
       }, { passive: true });
+    })();
+
+    // Load about content
+    (function() {
+      var isGithub = window.location.hostname.indexOf('github.io') !== -1;
+      var remoteUrl = 'https://raw.githubusercontent.com/i7koe/kiki-thinking/gh-pages/about.json?t=' + Date.now();
+
+      function tryFetch(url) {
+        return fetch(url, { cache: 'no-cache' }).then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        });
+      }
+
+      var fetchPromise = isGithub
+        ? tryFetch('about.json?t=' + Date.now())
+        : tryFetch(remoteUrl).catch(function() { return tryFetch('about.json?t=' + Date.now()); });
+
+      fetchPromise
+        .then(function(data) {
+          var content = data.content || '（暂无内容）';
+          var html = '';
+          try {
+            html = marked.parse(content);
+          } catch (e) {
+            html = '<p>' + content.replace(/\n/g, '<br>') + '</p>';
+          }
+          document.getElementById('about-content').innerHTML = html;
+        })
+        .catch(function() {
+          document.getElementById('about-content').innerHTML =
+            '<p style="color: #828282;">加载失败，请刷新重试。</p>';
+        });
     })();
   </script>
 
