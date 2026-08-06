@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>kk^小記</title>
-  <meta name="description" content="世事漫隨流水">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -13,6 +12,7 @@
     <div class="wrapper">
       <a class="site-title" href="index.html">kk^小記</a>
       <nav class="site-nav">
+        <a href="index.html">文章</a>
         <a href="about.html">关于</a>
       </nav>
     </div>
@@ -20,31 +20,42 @@
 
   <main class="page-content">
     <div class="wrapper">
+      <div class="layout">
 
-      <h2 class="post-list-heading">文章</h2>
-      <ul class="post-list">
-        <li>
-          <span class="post-meta">2025年08月06日</span>
-          <h3><a class="post-link" href="post.html">你好，世界</a></h3>
-        </li>
-      </ul>
-
-      <div class="music-section">
-        <p class="music-label">此刻在听</p>
-        <div class="music-player">
-          <iframe
-            frameborder="no"
-            border="0"
-            marginwidth="0"
-            marginheight="0"
-            width="330"
-            height="86"
-            src="//music.163.com/outchain/player?type=2&id=2001036566&auto=1&height=66"
-            allow="autoplay; encrypted-media">
-          </iframe>
+        <div class="main-col">
+          <h2 class="post-list-heading">文章</h2>
+          <ul class="post-list" id="post-list">
+            <li style="color: #828282; font-size: 14px;">加载中...</li>
+          </ul>
         </div>
-      </div>
 
+        <aside class="sidebar-col">
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">关于</h3>
+            <div class="sidebar-about">
+              <span class="site-name">kk^小記</span>
+              <span class="site-desc">世事漫隨流水</span>
+            </div>
+          </div>
+
+          <div class="sidebar-section music-section">
+            <h3 class="sidebar-title">此刻在听</h3>
+            <div class="music-player">
+              <iframe
+                frameborder="no"
+                border="0"
+                marginwidth="0"
+                marginheight="0"
+                width="280"
+                height="86"
+                src="//music.163.com/outchain/player?type=2&id=2001036566&auto=1&height=66"
+                allow="autoplay; encrypted-media">
+              </iframe>
+            </div>
+          </div>
+        </aside>
+
+      </div>
     </div>
   </main>
 
@@ -53,6 +64,78 @@
       <p>&copy; 2025 [咳咳咳] &middot; 由 [kk] 驱动</p>
     </div>
   </footer>
+
+  <div class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </div>
+
+  <script>
+    (function() {
+      // Back to top
+      var btn = document.querySelector('.back-to-top');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      }, { passive: true });
+    })();
+
+    // Load posts
+    (function() {
+      function formatDate(d) {
+        var parts = d.split('-');
+        return parts[0] + '年' + parts[1] + '月' + parts[2] + '日';
+      }
+
+      function renderPosts(posts) {
+        var list = document.getElementById('post-list');
+        if (!posts || posts.length === 0) {
+          list.innerHTML = '<li style="color: #828282; font-size: 14px;">还没有文章。</li>';
+          return;
+        }
+        var html = '';
+        for (var i = 0; i < posts.length; i++) {
+          var p = posts[i];
+          html += '<li>' +
+            '<span class="post-meta">' + formatDate(p.date) + '</span>' +
+            '<h3 style="margin: 0;"><a class="post-link" href="post.html?id=' + encodeURIComponent(p.id) + '">' + escapeHtml(p.title) + '</a></h3>' +
+            (p.excerpt ? '<p class="post-excerpt">' + escapeHtml(p.excerpt) + '</p>' : '') +
+            '</li>';
+        }
+        list.innerHTML = html;
+      }
+
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      // On GitHub Pages: fetch local posts.json (same as repo)
+      // On other hosts (CloudStudio): try GitHub raw first, fall back to local
+      var isGithub = window.location.hostname.indexOf('github.io') !== -1;
+      var remoteUrl = 'https://raw.githubusercontent.com/i7koe/kiki-thinking/main/posts.json?t=' + Date.now();
+      var fetchUrl = isGithub ? 'posts.json' : remoteUrl;
+
+      function tryFetch(url) {
+        return fetch(url, { cache: 'no-cache' }).then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        });
+      }
+
+      (isGithub ? tryFetch('posts.json?t=' + Date.now()) : tryFetch(remoteUrl).catch(function() { return tryFetch('posts.json?t=' + Date.now()); }))
+        .then(function(data) { renderPosts(data.posts || []); })
+        .catch(function(err) {
+          document.getElementById('post-list').innerHTML =
+            '<li style="color: #828282; font-size: 14px;">文章加载失败，请刷新重试。</li>';
+        });
+    })();
+  </script>
 
 </body>
 </html>
