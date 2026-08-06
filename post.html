@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>你好，世界 - kk^小記</title>
+  <title>文章 - kk^小記</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,6 +12,7 @@
     <div class="wrapper">
       <a class="site-title" href="index.html">kk^小記</a>
       <nav class="site-nav">
+        <a href="index.html">文章</a>
         <a href="about.html">关于</a>
       </nav>
     </div>
@@ -19,49 +20,41 @@
 
   <main class="page-content">
     <div class="wrapper">
-      <article class="post">
-        <header class="post-header">
-          <h1 class="post-title">你好，世界</h1>
-          <p class="post-meta">2025年08月06日</p>
-        </header>
+      <div class="layout">
 
-        <div class="post-content">
-          <p>这是 kk^小記 的第一篇文章。</p>
-          <p>在这里用 Markdown 写作，保存到 <code>_posts</code> 目录，文件名格式为 <code>YYYY-MM-DD-标题.md</code>，推送到 GitHub 后网站会自动更新。</p>
-
-          <h2>Markdown 示例</h2>
-          <blockquote>世事漫隨流水</blockquote>
-          <p><strong>粗体</strong>、<em>斜体</em>、<a href="#">链接</a>、<code>行内代码</code></p>
-          <ul>
-            <li>列表项一</li>
-            <li>列表项二</li>
-            <li>列表项三</li>
-          </ul>
-          <pre><code>def hello():
-    print("Hello, World!")</code></pre>
-          <hr>
-          <p>开始你的写作之旅吧。</p>
+        <div class="main-col">
+          <article class="post" id="post-article">
+            <div style="color: #828282; font-size: 14px; padding: 40px 0;">加载中...</div>
+          </article>
         </div>
 
-        <div class="giscus-container">
-          <script src="https://giscus.app/client.js"
-            data-repo="i7koe/kiki-thinking"
-            data-repo-id="R_kgDOTv1pXQ"
-            data-category="Announcements"
-            data-category-id="DIC_kwDOTv1pXc4DCzi1"
-            data-mapping="pathname"
-            data-strict="0"
-            data-reactions-enabled="1"
-            data-emit-metadata="0"
-            data-input-position="bottom"
-            data-theme="light"
-            data-lang="zh-CN"
-            data-loading="lazy"
-            crossorigin="anonymous"
-            async>
-          </script>
-        </div>
-      </article>
+        <aside class="sidebar-col">
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">关于</h3>
+            <div class="sidebar-about">
+              <span class="site-name">kk^小記</span>
+              <span class="site-desc">世事漫隨流水</span>
+            </div>
+          </div>
+
+          <div class="sidebar-section music-section">
+            <h3 class="sidebar-title">此刻在听</h3>
+            <div class="music-player">
+              <iframe
+                frameborder="no"
+                border="0"
+                marginwidth="0"
+                marginheight="0"
+                width="280"
+                height="86"
+                src="//music.163.com/outchain/player?type=2&id=2001036566&auto=1&height=66"
+                allow="autoplay; encrypted-media">
+              </iframe>
+            </div>
+          </div>
+        </aside>
+
+      </div>
     </div>
   </main>
 
@@ -70,6 +63,161 @@
       <p>&copy; 2025 [咳咳咳] &middot; 由 [kk] 驱动</p>
     </div>
   </footer>
+
+  <div class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </div>
+
+  <!-- Markdown renderer (with fallback) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // Fallback markdown renderer if CDN fails
+    if (typeof marked === 'undefined') {
+      window.marked = {
+        parse: function(text) {
+          return text
+            .split('\n\n')
+            .map(function(p) {
+              return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+            })
+            .join('\n');
+        }
+      };
+    }
+  </script>
+
+  <script>
+    (function() {
+      // Back to top
+      var btn = document.querySelector('.back-to-top');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      }, { passive: true });
+    })();
+
+    (function() {
+      function formatDate(d) {
+        var parts = d.split('-');
+        return parts[0] + '年' + parts[1] + '月' + parts[2] + '日';
+      }
+
+      function getQueryParam(name) {
+        var params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
+      function renderPost(post) {
+        // Set page title
+        document.title = post.title + ' - kk^小記';
+
+        var article = document.getElementById('post-article');
+        var contentHtml = '';
+        try {
+          contentHtml = marked.parse(post.content || '');
+        } catch (e) {
+          contentHtml = '<p>' + escapeHtml(post.content || '') + '</p>';
+        }
+
+        article.innerHTML =
+          '<header class="post-header">' +
+            '<h1 class="post-title">' + escapeHtml(post.title) + '</h1>' +
+            '<p class="post-meta">' + formatDate(post.date) + '</p>' +
+          '</header>' +
+          '<div class="post-content">' + contentHtml + '</div>' +
+          '<div class="giscus-container" id="giscus-container"></div>';
+
+        // Load Giscus
+        loadGiscus(post.title);
+      }
+
+      function loadGiscus(title) {
+        var container = document.getElementById('giscus-container');
+        var script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.setAttribute('data-repo', 'i7koe/kiki-thinking');
+        script.setAttribute('data-repo-id', 'R_kgDOTv1pXQ');
+        script.setAttribute('data-category', 'Announcements');
+        script.setAttribute('data-category-id', 'DIC_kwDOTv1pXc4DCzi1');
+        script.setAttribute('data-mapping', 'title');
+        script.setAttribute('data-strict', '0');
+        script.setAttribute('data-reactions-enabled', '1');
+        script.setAttribute('data-emit-metadata', '0');
+        script.setAttribute('data-input-position', 'bottom');
+        script.setAttribute('data-theme', 'light');
+        script.setAttribute('data-lang', 'zh-CN');
+        script.setAttribute('data-loading', 'lazy');
+        // Set the specific title for Giscus to use
+        script.setAttribute('data-term', title);
+        script.setAttribute('crossorigin', 'anonymous');
+        script.async = true;
+        container.appendChild(script);
+      }
+
+      function showNotFound() {
+        document.title = '文章不存在 - kk^小記';
+        document.getElementById('post-article').innerHTML =
+          '<div style="padding: 40px 0;">' +
+          '<h1 class="post-title">文章不存在</h1>' +
+          '<p style="color: #828282;">找不到这篇文章，可能已被删除。</p>' +
+          '<p><a href="index.html">← 返回首页</a></p>' +
+          '</div>';
+      }
+
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      var postId = getQueryParam('id');
+      if (!postId) {
+        showNotFound();
+      } else {
+        // On GitHub Pages: fetch local posts.json (same as repo)
+        // On other hosts (CloudStudio): try GitHub raw first, fall back to local
+        var isGithub = window.location.hostname.indexOf('github.io') !== -1;
+        var remoteUrl = 'https://raw.githubusercontent.com/i7koe/kiki-thinking/main/posts.json?t=' + Date.now();
+
+        function tryFetch(url) {
+          return fetch(url, { cache: 'no-cache' }).then(function(r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+          });
+        }
+
+        var fetchPromise = isGithub
+          ? tryFetch('posts.json?t=' + Date.now())
+          : tryFetch(remoteUrl).catch(function() { return tryFetch('posts.json?t=' + Date.now()); });
+
+        fetchPromise
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            var posts = data.posts || [];
+            var found = null;
+            for (var i = 0; i < posts.length; i++) {
+              if (posts[i].id === postId) {
+                found = posts[i];
+                break;
+              }
+            }
+            if (found) {
+              renderPost(found);
+            } else {
+              showNotFound();
+            }
+          })
+          .catch(function(err) {
+            showNotFound();
+          });
+      }
+    })();
+  </script>
 
 </body>
 </html>
