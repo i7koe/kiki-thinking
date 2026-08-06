@@ -569,19 +569,21 @@
         showToast('请输入 Token', 'error');
         return;
       }
+      // Save token first so ghHeaders() can read it
+      setToken(token);
       // Test token by fetching repo info
       fetch('https://api.github.com/repos/' + REPO, {
         headers: ghHeaders()
       })
         .then(function(resp) {
           if (resp.status === 401) {
+            clearToken();  // Invalid — remove it
             throw new Error('Token 无效');
           }
           if (!resp.ok) throw new Error('API ' + resp.status);
           return resp.json();
         })
         .then(function() {
-          setToken(token);
           showToast('登录成功', 'success');
           initAdmin();
         })
