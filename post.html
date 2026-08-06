@@ -179,9 +179,7 @@
       if (!postId) {
         showNotFound();
       } else {
-        // On GitHub Pages: fetch local posts.json (same as repo)
-        // On other hosts (CloudStudio): try GitHub raw first, fall back to local
-        var isGithub = window.location.hostname.indexOf('github.io') !== -1;
+        // Always fetch from GitHub raw first (gets updates instantly), fall back to local
         var remoteUrl = 'https://raw.githubusercontent.com/i7koe/kiki-thinking/gh-pages/posts.json?t=' + Date.now();
 
         function tryFetch(url) {
@@ -191,12 +189,7 @@
           });
         }
 
-        var fetchPromise = isGithub
-          ? tryFetch('posts.json?t=' + Date.now())
-          : tryFetch(remoteUrl).catch(function() { return tryFetch('posts.json?t=' + Date.now()); });
-
-        fetchPromise
-          .then(function(r) { return r.json(); })
+        tryFetch(remoteUrl).catch(function() { return tryFetch('posts.json?t=' + Date.now()); })
           .then(function(data) {
             var posts = data.posts || [];
             var found = null;
