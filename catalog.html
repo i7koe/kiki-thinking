@@ -20,50 +20,14 @@
 
   <main class="page-content">
     <div class="wrapper">
-      <div class="layout">
-
-        <div class="main-col">
-          <h2 class="post-list-heading">目录</h2>
-          <ul class="post-list" id="post-list">
-            <li style="color: #828282; font-size: 14px;">加载中...</li>
-          </ul>
-        </div>
-
-        <aside class="sidebar-col">
-          <div class="sidebar-section">
-            <h3 class="sidebar-title">关于</h3>
-            <div class="sidebar-about">
-              <span class="site-name">kk^小記</span>
-              <span class="site-desc">世事漫隨流水</span>
-            </div>
-          </div>
-
-          <div class="sidebar-section music-section">
-            <h3 class="sidebar-title">此刻在听</h3>
-            <div class="music-player">
-              <iframe
-                frameborder="no"
-                border="0"
-                marginwidth="0"
-                marginheight="0"
-                width="280"
-                height="86"
-                src="//music.163.com/outchain/player?type=2&id=2001036566&auto=1&height=66"
-                allow="autoplay; encrypted-media">
-              </iframe>
-            </div>
-          </div>
-        </aside>
-
+      <div class="main-col" style="max-width: 640px; margin: 0 auto;">
+        <h2 class="post-list-heading">目录</h2>
+        <ul class="post-list" id="post-list">
+          <li style="color: #828282; font-size: 14px;">加载中...</li>
+        </ul>
       </div>
     </div>
   </main>
-
-  <footer class="site-footer">
-    <div class="wrapper">
-      <p>&copy; 2025 [咳咳咳] &middot; 由 [kk] 驱动</p>
-    </div>
-  </footer>
 
   <div class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到顶部">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -83,7 +47,7 @@
       }, { passive: true });
     })();
 
-    // Load posts — title list only, no excerpt
+    // Load posts — title list only
     (function() {
       function formatDate(d) {
         var parts = d.split('-');
