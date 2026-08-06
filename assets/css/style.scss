@@ -1,0 +1,82 @@
+---
+---
+
+// ============================================
+// 配色覆盖（按用户指定色值）
+// 背景纯白 / 正文深灰 / 链接蓝色
+// ============================================
+$text-color: #333333;
+$background-color: #FFFFFF;
+$brand-color: #007AFF;
+$brand-color-dark: #0066cc;
+$brand-color-light: #4da6ff;
+
+// 布局变量
+$spacing-unit: 30px;
+$small-font-size: 14px;
+$base-font-size: 16px;
+$grey-color: #828282;
+$grey-color-light: #e8e8e8;
+$grey-color-dark: #4a4a4a;
+
+// ============================================
+// 引入 Minima 主题
+// ============================================
+@import "minima";
+
+// ============================================
+// 自定义样式
+// ============================================
+
+/* 音乐播放器区块 */
+.music-section {
+  margin: 40px 0 0;
+  padding: 20px 0;
+  border-top: 1px solid $grey-color-light;
+
+  .music-label {
+    font-size: $small-font-size;
+    color: $grey-color;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  .music-player {
+    width: 100%;
+    max-width: 330px;
+    height: 86px;
+    overflow: hidden;
+    line-height: 0;
+
+    iframe {
+      width: 100%;
+      max-width: 330px;
+      height: 86px;
+      border: none;
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+  }
+}
+
+/* Giscus 评论区 */
+.giscus-container {
+  margin-top: 40px;
+}
+
+/* 去掉多余装饰 */
+.site-header {
+  border-top: none;
+  border-bottom: 1px solid $grey-color-light;
+  background-color: $background-color;
+}
+
+.post-list {
+  margin-left: 0;
+  list-style: none;
+
+  > li {
+    margin-bottom: $spacing-unit;
+  }
+}
