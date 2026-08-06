@@ -412,7 +412,7 @@
         });
     }
 
-    function ghPutFile(path, content, sha, message) {
+    function ghPutFile(path, content, sha, message, isRetry) {
       var url = 'https://api.github.com/repos/' + REPO + '/contents/' + path;
       var body = {
         message: message || ('update: ' + path),
@@ -427,11 +427,29 @@
       })
         .then(function(resp) {
           if (!resp.ok) {
-            return resp.json().then(function(data) {
-              throw new Error(data.message || ('API ' + resp.status));
+            // Try to parse error as JSON, fall back to text
+            return resp.text().then(function(text) {
+              var msg = 'API ' + resp.status;
+              try {
+                var data = JSON.parse(text);
+                msg = data.message || msg;
+              } catch(e) {}
+              var err = new Error(msg);
+              err.status = resp.status;
+              throw err;
             });
           }
           return resp.json();
+        })
+        .catch(function(err) {
+          // On 409 (SHA conflict) or 422 (validation), retry once with fresh SHA
+          if (!isRetry && (err.status === 409 || err.status === 422)) {
+            console.log('SHA conflict (' + err.status + '), re-fetching and retrying...');
+            return ghGetFile(path).then(function(latest) {
+              return ghPutFile(path, content, latest.sha, message, true);
+            });
+          }
+          throw err;
         });
     }
 
@@ -769,7 +787,8 @@
           showList();
         })
         .catch(function(err) {
-          showToast('发布失败: ' + (err.message || '未知错误'), 'error');
+          console.error('Publish failed:', err);
+          showToast('发布失败: ' + (err.message || err.toString() || '未知错误'), 'error');
         })
         .finally(function() {
           btn.disabled = false;
