@@ -107,7 +107,7 @@
 
     // Load about content
     (function() {
-      var isGithub = window.location.hostname.indexOf('github.io') !== -1;
+      // Always fetch from GitHub raw first (gets updates instantly), fall back to local
       var remoteUrl = 'https://raw.githubusercontent.com/i7koe/kiki-thinking/gh-pages/about.json?t=' + Date.now();
 
       function tryFetch(url) {
@@ -117,11 +117,7 @@
         });
       }
 
-      var fetchPromise = isGithub
-        ? tryFetch('about.json?t=' + Date.now())
-        : tryFetch(remoteUrl).catch(function() { return tryFetch('about.json?t=' + Date.now()); });
-
-      fetchPromise
+      tryFetch(remoteUrl).catch(function() { return tryFetch('about.json?t=' + Date.now()); })
         .then(function(data) {
           var content = data.content || '（暂无内容）';
           var html = '';
