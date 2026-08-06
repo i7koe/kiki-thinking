@@ -1,49 +1,4 @@
-# ============================================
-# kk^小記 - Jekyll 站点配置
-# ============================================
-
 title: kk^小記
 description: 世事漫隨流水
-author: kk
-email: your-email@example.com
 url: "https://i7koe.github.io"
 baseurl: "/kiki-thinking"
-
-# 构建设置
-theme: minima
-
-# Minima 主题设置
-minima:
-  skin: classic
-  date_format: "%Y-%m-%d"
-
-# 首页是否显示文章摘要
-show_excerpts: false
-
-# 导航栏页面
-header_pages:
-  - about.md
-
-# ============================================
-# Giscus 评论配置
-# ============================================
-giscus:
-  repo: "i7koe/kiki-thinking"
-  repo_id: "R_kgDOTv1pXQ"
-  category: "Announcements"
-  category_id: "DIC_kwDOTv1pXc4DCzi1"
-  mapping: "pathname"
-  reactions_enabled: 1
-  emit_metadata: 0
-  input_position: "bottom"
-  theme: "light"
-  lang: "zh-CN"
-
-# 排除文件
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - node_modules
-  - vendor/
-  - README.md
-  - .gitignore
