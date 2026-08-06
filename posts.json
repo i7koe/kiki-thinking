@@ -4,8 +4,8 @@
       "id": "hello-world",
       "title": "hello( ´ ▽ ` )",
       "date": "2025-08-06",
-      "excerpt": "这是 kk^小記 的第一篇文章。 在这里用 Markdown 写作，推送到 GitHub 后网站会自动更新。 Markdown 示例  世事漫隨流水 粗体、斜体、链接、行内代码  列表项一  列表项二...",
-      "content": "这是 kk^小記 的第一篇文章。\n\n在这里用 Markdown 写作，推送到 GitHub 后网站会自动更新。\n\n## Markdown 示例\n\n> 世事漫隨流水\n\n**粗体**、*斜体*、[链接](#)、`行内代码`\n\n- 列表项一\n- 列表项二\n- 列表项三\n\n```\ndef hello():\n    print(\"Hello, World!\")\n```\n\n开始你的写作之旅吧。"
+      "excerpt": "",
+      "content": ""
     }
   ]
 }
