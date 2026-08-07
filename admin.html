@@ -713,7 +713,8 @@
             })
             .then(function() {
               // Insert Markdown image into editor at cursor position
-              var imageUrl = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + filename;
+              // Use jsDelivr CDN (has China nodes, raw.githubusercontent.com is often blocked in China)
+              var imageUrl = 'https://cdn.jsdelivr.net/gh/' + REPO + '@' + BRANCH + '/' + filename;
               var md = '![](' + imageUrl + ')';
               var textarea = document.getElementById('edit-content');
               var start = textarea.selectionStart;
