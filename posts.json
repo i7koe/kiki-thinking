@@ -1,13 +1,6 @@
 {
   "posts": [
     {
-      "id": "post-1786068893219",
-      "title": "唉",
-      "date": "2026-08-07",
-      "excerpt": "或許有那一瞬間就夠了",
-      "content": "或許有那一瞬間就夠了"
-    },
-    {
       "id": "hello-world",
       "title": "hello",
       "date": "2025-08-06",
