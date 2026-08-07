@@ -134,6 +134,22 @@
 
         // Load Giscus
         loadGiscus(post.title);
+
+        // Image fallback: if jsDelivr CDN fails, try GitHub Pages URL
+        var imgs = article.querySelectorAll('img');
+        imgs.forEach(function(img) {
+          img.addEventListener('error', function() {
+            if (img.dataset.fallback) return;
+            img.dataset.fallback = '1';
+            var src = img.src;
+            // Convert: cdn.jsdelivr.net/gh/i7koe/kiki-thinking@gh-pages/images/xxx.jpg
+            // To:      https://i7koe.github.io/kiki-thinking/images/xxx.jpg
+            var match = src.match(/cdn\.jsdelivr\.net\/gh\/([^/]+)\/([^/]+)@[^/]+\/(.+)/);
+            if (match) {
+              img.src = 'https://' + match[1] + '.github.io/' + match[2] + '/' + match[3];
+            }
+          });
+        });
       }
 
       function loadGiscus(title) {
